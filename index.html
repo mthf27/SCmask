@@ -1,0 +1,501 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SEM CONEXAO</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #6a11cb 0%, #2575fc 100%);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+        
+        .container {
+            width: 100%;
+            max-width: 800px;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            overflow: hidden;
+            margin: 20px 0;
+        }
+        
+        header {
+            background: #2c3e50;
+            color: white;
+            padding: 25px;
+            text-align: center;
+        }
+        
+        h1 {
+            font-size: 28px;
+            margin-bottom: 5px;
+        }
+        
+        .subtitle {
+            font-size: 16px;
+            opacity: 0.9;
+        }
+        
+        .form-container {
+            padding: 25px;
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #2c3e50;
+            font-size: 16px;
+        }
+        
+        input, textarea {
+            width: 100%;
+            padding: 14px;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            font-size: 16px;
+            transition: all 0.3s;
+        }
+        
+        input:focus, textarea:focus {
+            outline: none;
+            border-color: #3498db;
+            box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.2);
+        }
+        
+        textarea {
+            min-height: 100px;
+            resize: vertical;
+        }
+        
+        button {
+            background: #3498db;
+            color: white;
+            border: none;
+            padding: 14px 25px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: 600;
+            transition: all 0.3s;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+        
+        button i {
+            margin-right: 10px;
+        }
+        
+        .submit-btn {
+            background: #2ecc71;
+            width: 100%;
+            margin-top: 15px;
+            padding: 16px;
+        }
+        
+        .submit-btn:hover {
+            background: #27ae60;
+        }
+        
+        .result-container {
+            padding: 25px;
+            border-top: 1px solid #eee;
+            display: none;
+        }
+        
+        .result-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+        
+        .result-title {
+            font-size: 22px;
+            color: #2c3e50;
+        }
+        
+        .action-buttons {
+            display: flex;
+            gap: 10px;
+        }
+        
+        .copy-btn {
+            background: #9b59b6;
+        }
+        
+        .copy-btn:hover {
+            background: #8e44ad;
+        }
+        
+        .new-form-btn {
+            background: #e74c3c;
+        }
+        
+        .new-form-btn:hover {
+            background: #c0392b;
+        }
+        
+        .result-content {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 8px;
+            border-left: 5px solid #3498db;
+            font-size: 17px;
+        }
+        
+        .result-item {
+            margin-bottom: 15px;
+            padding-bottom: 15px;
+            border-bottom: 1px dashed #ddd;
+            display: flex;
+            flex-wrap: wrap;
+        }
+        
+        .result-item:last-child {
+            border-bottom: none;
+            margin-bottom: 0;
+            padding-bottom: 0;
+        }
+        
+        .result-label {
+            font-weight: 700;
+            color: #2c3e50;
+            min-width: 250px;
+            margin-right: 15px;
+        }
+        
+        .toast {
+            position: fixed;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(0, 0, 0, 0.85);
+            color: white;
+            padding: 16px 30px;
+            border-radius: 8px;
+            font-size: 16px;
+            opacity: 0;
+            transition: opacity 0.3s;
+            pointer-events: none;
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .toast.show {
+            opacity: 1;
+        }
+        
+        @media (max-width: 650px) {
+            .result-label {
+                min-width: 100%;
+                margin-bottom: 5px;
+            }
+            
+            .result-header {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+            
+            .action-buttons {
+                width: 100%;
+                flex-direction: column;
+            }
+            
+            button {
+                width: 100%;
+            }
+        }
+        
+        .logo {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        
+        .logo i {
+            font-size: 42px;
+            color: #3498db;
+            background: #f0f7ff;
+            padding: 20px;
+            border-radius: 50%;
+        }
+        
+        /* Estilos para os botões de opção ON/OFF */
+        .toggle-group {
+            display: flex;
+            gap: 15px;
+            margin-top: 8px;
+        }
+        
+        .toggle-option {
+            display: flex;
+            align-items: center;
+            cursor: pointer;
+        }
+        
+        .toggle-option input[type="radio"] {
+            display: none;
+        }
+        
+        .toggle-label {
+            padding: 10px 20px;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            background-color: #f8f9fa;
+            transition: all 0.3s;
+            font-weight: 600;
+        }
+        
+        .toggle-option input[type="radio"]:checked + .toggle-label {
+            background-color: #3498db;
+            color: white;
+            border-color: #3498db;
+        }
+        
+        .toggle-option:hover .toggle-label {
+            border-color: #3498db;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Formulário de Registro</h1>
+            <p class="subtitle">Preencha todos os campos abaixo</p>
+        </header>
+        
+        <div class="form-container">
+            <div class="logo">
+                <i class="fas fa-clipboard-list"></i>
+            </div>
+            
+            <form id="registroForm">
+                <div class="form-group">
+                    <label for="data"><i class="fas fa-calendar-alt"></i> DATA:</label>
+                    <input type="date" id="data" name="data" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="equipamentos"><i class="fas fa-laptop"></i> EQUIPAMENTOS:</label>
+                    <input type="text" id="equipamentos" name="equipamentos" required>
+                </div>
+                
+                <div class="form-group">
+                    <label><i class="fas fa-building"></i> MKSOLUTIONS:</label>
+                    <div class="toggle-group">
+                        <div class="toggle-option">
+                            <input type="radio" id="mksolutions_on" name="mksolutions" value="ON" required>
+                            <label for="mksolutions_on" class="toggle-label">ON</label>
+                        </div>
+                        <div class="toggle-option">
+                            <input type="radio" id="mksolutions_off" name="mksolutions" value="OFF">
+                            <label for="mksolutions_off" class="toggle-label">OFF</label>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label><i class="fas fa-server"></i> ANM/U2000:</label>
+                    <div class="toggle-group">
+                        <div class="toggle-option">
+                            <input type="radio" id="anm_u2000_on" name="anm_u2000" value="ON" required>
+                            <label for="anm_u2000_on" class="toggle-label">ON</label>
+                        </div>
+                        <div class="toggle-option">
+                            <input type="radio" id="anm_u2000_off" name="anm_u2000" value="OFF">
+                            <label for="anm_u2000_off" class="toggle-label">OFF</label>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label for="cto"><i class="fas fa-network-wired"></i> CTO:</label>
+                    <input type="text" id="cto" name="cto" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="origem_contato"><i class="fas fa-user"></i> Origem do contato e nome:</label>
+                    <input type="text" id="origem_contato" name="origem_contato" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="localizacao"><i class="fas fa-map-marker-alt"></i> LOCALIZAÇÃO OU PONTO DE REFERÊNCIA:</label>
+                    <textarea id="localizacao" name="localizacao" required></textarea>
+                </div>
+                
+                <button type="submit" class="submit-btn">
+                    <i class="fas fa-paper-plane"></i> Gerar Dados
+                </button>
+            </form>
+        </div>
+        
+        <div class="result-container" id="resultContainer">
+            <div class="result-header">
+                <h2 class="result-title"><i class="fas fa-list-check"></i> Dados Gerados</h2>
+                <div class="action-buttons">
+                    <button class="copy-btn" id="copyBtn">
+                        <i class="fas fa-copy"></i> Copiar Dados
+                    </button>
+                    <button class="new-form-btn" id="newFormBtn">
+                        <i class="fas fa-plus"></i> Novo Formulário
+                    </button>
+                </div>
+            </div>
+            
+            <div class="result-content" id="resultContent">
+                <!-- Os resultados serão inseridos aqui via JavaScript -->
+            </div>
+        </div>
+    </div>
+    
+    <div class="toast" id="toast">
+        <i class="fas fa-check-circle"></i>
+        <span>Dados copiados para a área de transferência! O formulário será reiniciado.</span>
+    </div>
+
+    <script>
+        document.getElementById('registroForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            // Coletar os valores dos campos
+            const data = document.getElementById('data').value;
+            const equipamentos = document.getElementById('equipamentos').value;
+            const mksolutions = document.querySelector('input[name="mksolutions"]:checked').value;
+            const anm_u2000 = document.querySelector('input[name="anm_u2000"]:checked').value;
+            const cto = document.getElementById('cto').value;
+            const origem_contato = document.getElementById('origem_contato').value;
+            const localizacao = document.getElementById('localizacao').value;
+            
+            // Formatar a data para exibição (DD/MM/AAAA)
+            const dataFormatada = formatarData(data);
+            
+            // Gerar o conteúdo dos resultados
+            const resultHTML = `
+                <div class="result-item">
+                    <span class="result-label">DATA:</span> ${dataFormatada}
+                </div>
+                <div class="result-item">
+                    <span class="result-label">EQUIPAMENTOS:</span> ${equipamentos}
+                </div>
+                <div class="result-item">
+                    <span class="result-label">MKSOLUTIONS:</span> ${mksolutions}
+                </div>
+                <div class="result-item">
+                    <span class="result-label">ANM/U2000:</span> ${anm_u2000}
+                </div>
+                <div class="result-item">
+                    <span class="result-label">CTO:</span> ${cto}
+                </div>
+                <div class="result-item">
+                    <span class="result-label">Origem do contato e nome:</span> ${origem_contato}
+                </div>
+                <div class="result-item">
+                    <span class="result-label">LOCALIZAÇÃO OU PONTO DE REFERÊNCIA:</span> ${localizacao}
+                </div>
+            `;
+            
+            // Inserir os resultados no HTML
+            document.getElementById('resultContent').innerHTML = resultHTML;
+            
+            // Mostrar a seção de resultados
+            document.getElementById('resultContainer').style.display = 'block';
+            
+            // Rolar até os resultados
+            document.getElementById('resultContainer').scrollIntoView({ behavior: 'smooth' });
+        });
+        
+        // Adicionar evento de clique ao botão de copiar
+        document.getElementById('copyBtn').addEventListener('click', function() {
+            // Obter o texto dos resultados
+            const resultText = `
+DATA: ${formatarData(document.getElementById('data').value)}
+EQUIPAMENTOS: ${document.getElementById('equipamentos').value}
+MKSOLUTIONS: ${document.querySelector('input[name="mksolutions"]:checked').value}
+ANM/U2000: ${document.querySelector('input[name="anm_u2000"]:checked').value}
+CTO: ${document.getElementById('cto').value}
+Origem do contato e nome: ${document.getElementById('origem_contato').value}
+LOCALIZAÇÃO OU PONTO DE REFERÊNCIA: ${document.getElementById('localizacao').value}
+            `;
+            
+            // Copiar para a área de transferência
+            navigator.clipboard.writeText(resultText.trim())
+                .then(() => {
+                    // Mostrar toast de confirmação
+                    const toast = document.getElementById('toast');
+                    toast.classList.add('show');
+                    
+                    setTimeout(() => {
+                        toast.classList.remove('show');
+                        
+                        // Reiniciar o formulário após a cópia
+                        resetForm();
+                    }, 3000);
+                })
+                .catch(err => {
+                    console.error('Erro ao copiar texto: ', err);
+                });
+        });
+        
+        // Adicionar evento de clique ao botão de novo formulário
+        document.getElementById('newFormBtn').addEventListener('click', function() {
+            resetForm();
+        });
+        
+        function resetForm() {
+            // Limpar o formulário
+            document.getElementById('registroForm').reset();
+            
+            // Ocultar a seção de resultados
+            document.getElementById('resultContainer').style.display = 'none';
+            
+            // Rolar de volta para o topo do formulário
+            document.getElementById('registroForm').scrollIntoView({ behavior: 'smooth' });
+        }
+        
+        function formatarData(data) {
+            if (!data) return '';
+            
+            // Converter de AAAA-MM-DD para DD/MM/AAAA
+            const partes = data.split('-');
+            if (partes.length === 3) {
+                return `${partes[2]}/${partes[1]}/${partes[0]}`;
+            }
+            
+            return data;
+        }
+    </script>
+</body>
+<footer>© - Matheus Freitas</footer>
+    <script src="./js/app.js"></script>
+  </body>
+</html>
+
+</html>
